@@ -4,7 +4,7 @@ A 3D fighting game that runs in the browser on iPhone and PC.
 
 ## Play
 
-Open `index.html` in a browser, or visit the GitHub Pages link for this repository.
+**[Play Dragon Brawl](https://imatination.github.io/Dragon-Brawl/)**
 
 On iPhone, open the link in Safari, tap Share, then **Add to Home Screen** to play it full screen.
 
