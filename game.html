@@ -431,7 +431,7 @@ function mk(ci){const bn=[];const TK=ASSETS[ci].k.length>9;for(let i=0;i<(TK?10:
  const g=new THREE.Group(),w=new THREE.Group();w.add(m);const sc=S*EYE_T/(EYE[ASSETS[ci].n]-ft);w.scale.setScalar(sc);w.position.y=-ft*sc;g.add(w);
  const au=new THREE.Mesh(new THREE.SphereGeometry(1.5,16,12),new THREE.MeshBasicMaterial({color:0xffe060,transparent:true,opacity:.35,blending:THREE.AdditiveBlending,depthWrite:false}));au.position.y=1.1;au.visible=false;g.add(au);
  const sh=new THREE.Mesh(new THREE.CircleGeometry(.9,16),new THREE.MeshBasicMaterial({color:0,transparent:true,opacity:.4,depthWrite:false}));sh.rotation.x=-PI/2;scn.add(sh);
- scn.add(g);return{g,w,bn,au,sh,ft,sc,cur:new Array(16).fill(0)}}
+ scn.add(g);return{g,w,bn,au,sh,ft,sc,cur:new Array(18).fill(0)}}
 // ---------- fighters
 const F=[],PJ=[];let ph=0;
 function fighter(ci,pl,x,z,pt){pt=pt||{h:0,k:0,s:0};const o=mk(ci);return Object.assign(o,{ci,pl,mh:100+pt.h*15,mk:100,ms:100,mm:1+.15*pt.s,km:1+.15*pt.k,kr:1+.15*pt.k,sr:1+.15*pt.s,mv:1+.06*(pt.v||0),um:1+.15*(pt.u||0),p:new THREE.Vector3(x,gY(x,z),z),v:new THREE.Vector3(),yaw:pl?PI/2:-PI/2,hp:100+pt.h*15,ki:75,st:100,cd:0,atk:0,atkT:'',hitD:1,hit:0,stun:0,combo:0,ct:0,inv:0,chgCd:0,fk:0,pc:0,fl:0,cdT:1,atkD:.35,lp:0,ry:0,win:0,fly:false,gr:true,chg:false,dead:false,ph:0,side:0,ai:{t:0,m:0,x:0,z:0,s:0,c:0,bt:0,bs:0}})}
@@ -471,14 +471,14 @@ function pClear(){UNL=[];WINS=0;
  try{document.cookie='db_save=;max-age=0;path=/;SameSite=Lax'}catch(e){}
  pIdb(db=>{db.transaction('s','readwrite').objectStore('s').delete(PK)});cloudPut()}
 function pose(f,dt){const t=performance.now()/1000,sy=Math.sin(f.yaw),cy=Math.cos(f.yaw),vf=f.v.x*sy+f.v.z*cy,vr=-f.v.x*cy+f.v.z*sy,sp=Math.hypot(f.v.x,f.v.z),
- fw=cl(vf/6.5,-1.5,2.4),sd=cl(vr/6.5,-1,1),lp=(a,b,k)=>a+(b-a)*cl(k,0,1);f.ph+=sp*dt*1.4;const s=Math.sin(f.ph),cs=Math.cos(f.ph)*(fw<0?-1:1),bob=Math.sin(t*5);let T,kA=.15+bob*.04,kB=.15-bob*.04;
+ fw=cl(vf/6.5,-1.5,2.4),sd=cl(vr/6.5,-1,1),lp=(a,b,k)=>a+(b-a)*cl(k,0,1);f.ph+=sp*dt*1.4;const s=Math.sin(f.ph),cs=Math.cos(f.ph)*(fw<0?-1:1),bob=Math.sin(t*5);let T,kA=.15+bob*.04,kB=.15-bob*.04,xb=0;
  // [bodyZ,bodyY,headZ,aAZ,aAX,aBZ,aBX,lAZ,lAX,lBZ,lBX,rootY,bodyX,rootZ] ; arm/leg Z: forward = negative; body/head Z: forward lean = negative; knees = bend amount
  if(f.dead){T=[0,0,.3,.6,-.5,.6,.5,.2,-.1,.2,.1,-.2,0,1.45];kA=kB=.3}
  else if(f.pt){T=[-.12,.35,0,-1,-.35,-1.5,.1,-.2,-.14,.25,.14,0,0,0];kA=kB=.15}
  else if(f.win){T=[-.05,Math.sin(t*3)*.2,-.1,-3,-.2,.4,.6,-.1,-.15,.1,.15,Math.abs(Math.sin(t*4))*.05,0,0];kA=kB=.2}
  else if(f.stun>0){T=[0,0,.3,.7+Math.sin(t*9)*.15,-.5,.7-Math.sin(t*9)*.15,.5,.2,-.1,.2,.1,-.2,0,1.45];kA=kB=.3}
  else if(f.hit>0){T=[.6,Math.sin(t*40)*.1,.5,.9,-.7,.9,.7,.3,-.1,-.3,.1,0,0,0];kA=.4;kB=.2}
- else if(f.blk){T=[-.25,0,0,-1.75,.7,-1.75,-.7,-.2,-.14,.25,.14,-.08,0,0];kA=kB=.5}
+ else if(f.blk){T=[-.25,0,0,-1.7,0,-1.5,0,-.2,-.14,.25,.14,-.08,0,0];kA=kB=.5;xb=1}
  else if(f.chg){const h=Math.sin(t*45)*.04;T=[-.2+h,0,0,.35,-.7,.35,.7,-.1,-.4,.1,.4,-.1+h*.5,0,0];kA=kB=.55}
  else if(f.atk>0&&(f.atkT=='p'||f.atkT=='h')){const k=cl(1-f.atk/f.atkD,0,1),g=k<.25?lp(-1,.8,k/.25):k<.5?lp(.8,-1.7,(k-.25)/.25):lp(-1.7,-1,(k-.5)/.5),A=f.side;
   T=[-.3*Math.sin(k*PI),(A?1:-1)*.6*Math.sin(k*PI),0,A?g:-1,-.3,A?-1:g,.3,-.4,-.14,.4,.14,-.03*Math.sin(k*PI),0,0];kA=.4;kB=.25}
@@ -493,13 +493,13 @@ function pose(f,dt){const t=performance.now()/1000,sy=Math.sin(f.yaw),cy=Math.co
   if(fw>1.6){T=[-.5,s*.15,0,.9+s*.4,-.3,.9-s*.4,.3,-s*1.1,-.1,s*1.1,.1,Math.abs(s)*.05,-.1*sd,0];kA*=1.4;kB*=1.4}
   else T=[-.15,s*.12*fw,0,-1+s*.3*fw,-.35,-1-s*.3*fw,.35,-s*.9*fw,-.14+.3*sd*s,s*.9*fw,.14+.3*sd*s,Math.abs(s)*.045,-.15*sd,0]}
  else T=[-.15+bob*.02,0,0,-1+bob*.05,-.35,-1+bob*.05,.35,-.2,-.14,.25,.14,bob*.015-.02,0,0];
- T.push(kA,kB);
- const k=Math.min(1,dt*(f.atk>0?80:f.dead?6:18)),c=f.cur,q=f.bn;for(let i=0;i<16;i++)c[i]+=(T[i]-c[i])*k;
+ T.push(kA,kB,xb*1.45,-xb*1.45);
+ const k=Math.min(1,dt*(f.atk>0?80:f.dead?6:18)),c=f.cur,q=f.bn;for(let i=0;i<18;i++)c[i]+=(T[i]-c[i])*k;
  // model faces +X: arm/leg forward swing = +Z rotation, body/head forward lean = -Z
  q[0].rotation.z=c[13];q[0].position.y=c[11];q[1].rotation.set(-c[12],c[1],c[0]);
  const hl=f.dead?0:1;q[2].rotation.set(0,cl(f.ry,-.9,.9)*hl,c[2]+cl(f.lp,-.9,.9)*hl-c[0]*.6*hl);
  if(q[9]){const dd=f.dead||f.stun>0?.5:0;q[9].rotation.set(0,Math.sin(t*2.3+f.ph*.6)*(.22+.06*Math.min(sp,6))-c[12]*.5,.12+Math.sin(t*1.7)*.07-(sp>.6?.3:0)+dd-(f.fly?.2:0))}
- q[3].rotation.set(c[4],0,-c[3]);q[4].rotation.set(c[6],0,-c[5]);q[5].rotation.set(c[8],0,-c[7]);q[6].rotation.set(c[10],0,-c[9]);q[7].rotation.z=-c[14];q[8].rotation.z=-c[15];
+ q[3].rotation.set(c[4],c[16],-c[3]);q[4].rotation.set(c[6],c[17],-c[5]);q[5].rotation.set(c[8],0,-c[7]);q[6].rotation.set(c[10],0,-c[9]);q[7].rotation.z=-c[14];q[8].rotation.z=-c[15];
  f.w.rotation.y=f.yaw;f.au.visible=f.chg||(f.fly&&sp>1);f.au.material.color.set(f.chg?0xffe060:0xaaddff);f.au.scale.setScalar(f.chg?1+Math.sin(t*30)*.08:.7)}
 // note: arm rotation sign: side A (z>0) abduct = rot.x negative; handled by -c[4]/-c[6] with idle values above
 function dmg(f,d,from,kb,hs){const hh=hs||.35;if(hh<.34)sfxPunch();else if(hh>=.45&&hh<.55)sfxHeavy();if(f.dead||f.inv>0)return;if(f.blk){const bg=(hs||0)>=.6;f.hp=Math.max(0,f.hp-d*(bg?.5:.2));const dx=f.p.x-from.x,dz=f.p.z-from.z,l=Math.hypot(dx,dz)||1;f.v.x=dx/l*(4+kb*.4);f.v.z=dz/l*(4+kb*.4);fx(V3(f.p.x,f.p.y+1.3,f.p.z),0x9fe8ff,2,.2);const A=f===fp?fe:fp;if(A){A.v.x=-dx/l*7;A.v.z=-dz/l*7;A.atk=0;A.hit=.2;A.cd=Math.max(A.cd,.3);A.combo=0};if(f.hp<=0){f.dead=true;f.v.y=6}if(f.pl)shake=.1;return}f.hp=Math.max(0,f.hp-d);f.hit=hs||.35;if((hs||.35)<.34){const e_={t:performance.now(),pl:f===fe?1:0};RHT.push(e_);if(f.atk>0&&(f.atkT=='p'||f.atkT=='h'))RHT.push({...e_})}CA.value=Math.min(2.2,CA.value+.12);f.chg=false;f.atk=0;f.hitD=1;const dx=f.p.x-from.x,dz=f.p.z-from.z,l=Math.hypot(dx,dz)||1;f.v.x=dx/l*kb;f.v.z=dz/l*kb;f.cam&&0;if(f.hp<=0){f.dead=true;f.v.y=6}
@@ -564,7 +564,7 @@ function ultStep(dt){const U=ult,{a,d,u,s}=U,ap=a.p,dp=d.p,mid=ap.clone().add(dp
   setC(ap.clone().addScaledVector(u,5.5).addScaledVector(s,2.5).add(V3(0,1,0)),ap.clone().add(V3(0,1.7,0)));
   if(U.t>1.6){U.ph=5;U.t=0;U.ep=Math.floor(R()*3);rpSel=-1;rpUI(1);msg('',1)}}
  else if(U.ph==3){a.atkT=d.atkT='b';a.atkD=d.atkD=.4;a.atk=d.atk=.2;
-  U.acc+=(5.2+Math.sin(U.t*2.1)*1.6+R()*.8)*dt;const an=Math.floor(U.acc);U.acc-=an;const hm=mash;mash=0;const pa=a.pl?hm:an,pd=a.pl?an:hm;
+  U.acc+=(5.2+Math.sin(U.t*2.1)*1.6+R()*.8)*dt;const an=DUM(a.pl?d:a)?0:Math.floor(U.acc);U.acc-=an;const hm=mash;mash=0;const pa=a.pl?hm:an,pd=a.pl?an:hm;
   U.p=cl(U.p+(pa-pd)*.034+dt*.03,0,1);
   const Ao=ap.clone().add(V3(0,1.4,0)).addScaledVector(u,.9),Do=dp.clone().add(V3(0,1.4,0)).addScaledVector(u,-.9),C=Ao.clone().lerp(Do,U.p);
   setBeam(U.ba,Ao,C);setBeam(U.bd,Do,C);U.orb.position.copy(C);U.orb.scale.setScalar(1.4+Math.sin(U.t*30)*.25);
@@ -573,7 +573,7 @@ function ultStep(dt){const U=ult,{a,d,u,s}=U,ap=a.p,dp=d.p,mid=ap.clone().add(dp
   if(U.p>=.95||U.p<=.05||U.t>4){U.w=U.p>.5?1:0;U.ph=4;U.t=0;U.k=0}}
  else if(U.ph==5||U.ph==6){setC(ap.clone().addScaledVector(u,5.5).addScaledVector(s,2.5).add(V3(0,1,0)),ap.clone().add(V3(0,1.7,0)));
   if(U.ph==5){const tl=2.5-U.t;$('rtt').textContent='CHOOSE!  '+Math.max(0,tl).toFixed(1);$('rbar').firstElementChild.style.width=cl(tl/2.5,0,1)*100+'%';
-   if(rpSel>=0||tl<=0){const hp=rpSel>=0?rpSel:Math.floor(R()*3),ep=U.ep;U.pa=a.pl?hp:ep;U.pd=a.pl?ep:hp;const dd=(U.pd-U.pa+3)%3;U.r=dd==0?0:dd==1?1:-1;U.ph=6;U.t=0;
+   if(rpSel>=0||tl<=0){const hp=rpSel>=0?rpSel:Math.floor(R()*3),ep=DUM(d)&&a.pl?(hp+1)%3:U.ep;U.pa=a.pl?hp:ep;U.pd=a.pl?ep:hp;const dd=(U.pd-U.pa+3)%3;U.r=dd==0?0:dd==1?1:-1;U.ph=6;U.t=0;
     const N=['PUNCH','BLAST','PAPER'],pp=a.pl?U.pa:U.pd,eq=a.pl?U.pd:U.pa,pr=a.pl?U.r:-U.r;
     $('rb').style.display='none';$('rt').style.display='none';$('rres').style.display='block';$('rres').innerHTML=`<div class="rv" style="background-image:var(--${N[pp]})"></div><b>VS</b><div class="rv" style="background-image:var(--${N[eq]})"></div>`;
     msg(pr==0?'DRAW!':pr>0?'YOU WIN!':'YOU LOSE!',1100)}}
@@ -582,7 +582,7 @@ function ultStep(dt){const U=ult,{a,d,u,s}=U,ap=a.p,dp=d.p,mid=ap.clone().add(dp
    else{U.w=U.r>0?1:0;U.k=0;U.ph=4;U.t=0}}}
  else if(U.ph==7){const mp=U.mp,gy=gY(mp.x,mp.z);a.p.set(mp.x-u.x*1.2,Math.max(gy,mp.y),mp.z-u.z*1.2);d.p.set(mp.x+u.x*1.2,Math.max(gy,mp.y),mp.z+u.z*1.2);a.v.set(0,0,0);d.v.set(0,0,0);a.fly=d.fly=false;
   const q=Math.floor(U.t*16);a.atkT=d.atkT='p';a.atkD=d.atkD=.1;a.atk=d.atk=.05;a.side=q&1;d.side=(q+1)&1;if(q!==U.q){U.q=q;if(q%2==0)fx(V3(mp.x,mp.y+1.5,mp.z),0xffffff,1.3,.12)}
-  U.acc+=(5.4+Math.sin(U.t*2.4)*1.6+R()*.8)*dt;const an=Math.floor(U.acc);U.acc-=an;const hm=mash;mash=0;const pa=a.pl?hm:an,pd=a.pl?an:hm;U.p=cl(U.p+(pa-pd)*.034+dt*.03,0,1);
+  U.acc+=(5.4+Math.sin(U.t*2.4)*1.6+R()*.8)*dt;const an=DUM(a.pl?d:a)?0:Math.floor(U.acc);U.acc-=an;const hm=mash;mash=0;const pa=a.pl?hm:an,pd=a.pl?an:hm;U.p=cl(U.p+(pa-pd)*.034+dt*.03,0,1);
   $('tug').firstElementChild.style.width=((a.pl?U.p:1-U.p)*100)+'%';shake=Math.max(shake,.1);
   setC(mp.clone().addScaledVector(s,7).add(V3(0,1.8,0)),mp.clone().add(V3(0,1.4,0)));
   if(U.p>=.95||U.p<=.05||U.t>4){U.w=U.p>.5?1:0;U.ph=4;U.t=0;U.k=0}}
@@ -605,7 +605,7 @@ function upd(f,o,i,dt){const dx=o.p.x-f.p.x,dz=o.p.z-f.p.z,dy=o.p.y-f.p.y,dist=M
  const busy=f.dead||f.stun>0||f.hit>0||locked;
  f.chg=!busy&&i.chg&&f.atk<=0&&f.chgCd<=0;
  if(f.chg&&!f.pc&&dist<6.5){dmg(o,2,f.p,22,.35);o.v.y=Math.max(o.v.y,5);fx(V3(f.p.x,f.p.y+1,f.p.z),0xffe070,6,.4)}if(f.pc&&!f.chg)f.chgCd=.6;if(f.chg&&!f.pc)chargeSfx(f,true);if(!f.chg&&f.pc)chargeSfx(f,false);f.pc=f.chg;f.blk=!busy&&i.blk&&f.atk<=0&&!f.chg;
- if(f.blk){f.v.x*=.8;f.v.z*=.8}
+ if(f.blk){f.v.x*=.8;f.v.z*=.8;if(f.fly)f.v.y+=(-4-f.v.y)*Math.min(1,dt*6)} // blocking in the air drifts down
  else if(f.chg){f.ki=Math.min(f.mk,f.ki+26*dt*f.mk/100*(f.kr||1));f.v.x*=.8;f.v.z*=.8}
  else if(!busy){
   const m=Math.hypot(i.x,i.z),sp=(f.fly?(i.sprint?24:13):(i.sprint?14:6.5))*(f.spd||1)*(f.mv||1);
@@ -641,7 +641,8 @@ function upd(f,o,i,dt){const dx=o.p.x-f.p.x,dz=o.p.z-f.p.z,dy=o.p.y-f.p.y,dist=M
  if(f.st<=0&&f.stun<=0&&!f.dead){f.st=0.1;f.stun=3;f.stunned=1;f.fly=false}
  if(f.stunned&&f.stun<=0){f.stunned=0;f.st=25}
  f.g.position.copy(f.p);f.sh.position.set(f.p.x,gY(f.p.x,f.p.z)+.03,f.p.z);f.sh.scale.setScalar(cl(1-(f.p.y-gY(f.p.x,f.p.z))/60,.3,1))}
-function ai(f,o,dt){const D=f.dif||2,a=f.ai,dx=o.p.x-f.p.x,dz=o.p.z-f.p.z,d=Math.hypot(dx,dz),i={x:0,z:0,sprint:false,jump:false,jh:false,atk:false,chg:false};
+const DUM=f=>!!f&&f.dif===0; // NONE difficulty: CPU stands still and never reacts
+function ai(f,o,dt){if(DUM(f))return{x:0,z:0,sprint:false,jump:false,jh:false,atk:false,chg:false};const D=f.dif||2,a=f.ai,dx=o.p.x-f.p.x,dz=o.p.z-f.p.z,d=Math.hypot(dx,dz),i={x:0,z:0,sprint:false,jump:false,jh:false,atk:false,chg:false};
  a.t-=dt;if(a.t<=0){a.t=D==1?1+R()*1.5:D==3?.35+R()*.7:.7+R()*1.3;a.m=R();a.s=R()<(D==3?.6:.3)}
  if(!a.bs&&a.t>0){const nc=nearestBall(f.p);if(nc){const nd_=Math.hypot(nc.position.x-f.p.x,nc.position.z-f.p.z);if(nd_<15&&nd_<d*.6&&d>8)a.bs=6}}
  if(f.hit>0)a.bs=0;
@@ -718,13 +719,15 @@ function pickBoss(i){const n=Math.min(DN.length,12),all=[...Array(n).keys()].eve
 window.pick=i=>{if(!isUnl(i))return;CB=null;sfxSel();sel=i;curBoss=nextBoss();const bb=pickBoss(i);BB=bb;
  const pl=[0,1,2,3].concat(isUnl(4)?[4]:[]).filter(x=>x!=i&&x!=bb[0]&&x!=bb[1]).sort(()=>R()-.5);order=[pl[0],pl[1],bb[0]];round=0;got=0;att={h:0,k:0,s:0,v:0,u:0};pool=3;tmp={h:0,k:0,s:0,v:0,u:0};allocUI()};
 function bracket(){setStage(round);const oc=round==2?BB[1]:order[round];npcP=npcPoints(3*(round+1),oc);
- ovl(`<h1>ROUND ${round+1} / 3${round==2?' · BOSS FIGHT':''}</h1><p class="hint">${STN[round]}</p><div class="vsb">${vsCard(sel,att)}<div class="vsx">VS</div>${vsCard(order[round],npcP)}</div><button onclick="sfxSel();go()">FIGHT</button>`)}
+ ovl(`<h1>ROUND ${round+1} / 3${round==2?' · BOSS FIGHT':''}</h1><p class="hint">${STN[round]}</p><div class="vsb">${vsCard(sel,att)}<div class="vsx">VS</div>${vsCard(order[round],npcP)}</div><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">${round==0?`<button onclick="brBack()">BACK</button>`:''}<button onclick="sfxSel();go()">FIGHT</button></div>`)}
+// back from Round 1 reopens power-up with the player's picks still placed so they can change them
+window.brBack=()=>{sfxSel();tmp={...att};att={h:0,k:0,s:0,v:0,u:0};pool=3;aLast=null;allocUI()};
 
 // ---------- custom battle: your fighter -> opponent -> stage -> music/difficulty
 let CB=null;
 const cbGrid=fn=>`<div class="grid2">${SEL_ORDER.map(i=>[DN[i],i]).map(([d,i])=>`<button class="card2 sel" onclick="${fn}(${i})" aria-label="${d}"><span class="ic" style="${selPos(i)}"></span><span class="nm2">${d}</span></button>`).join('')}</div>`;
-const CBM=[['battle','BATTLE'],['r2','ROUND 2'],['boss','BOSS'],['aot','AOT'],['title','TITLE'],[null,'SILENT']],CBD=['EASY','MEDIUM','HARD'];
-function cbPick(){st='menu';locked=true;CB={p:-1,o:-1,s:0,m:'battle',d:1,on:false};
+const CBM=[['battle','BATTLE'],['r2','ROUND 2'],['boss','BOSS'],['aot','AOT'],['title','TITLE'],[null,'SILENT']],CBD=['NONE','EASY','MEDIUM','HARD'];
+function cbPick(){st='menu';locked=true;CB={p:-1,o:-1,s:0,m:'battle',d:2,on:false};
  ovl(`<div class="ttl">CUSTOM BATTLE</div><p class="hint">Step 1 of 4 · Choose your fighter</p>${cbGrid('cbP')}<button onclick="sfxSel();menu()">BACK</button>`)}
 window.customUI=()=>{sfxSel();cbPick()};
 window.cbP=i=>{sfxSel();CB.p=i;cbOpp()};
@@ -734,14 +737,14 @@ function cbStage(){ovl(`<div class="ttl">CUSTOM BATTLE</div><p class="hint">Step
 window.cbS=k=>{sfxSel();CB.s=k;setStage(k);cbMusic()};
 function cbMusic(){ovl(`<div class="ttl">CUSTOM BATTLE</div><p class="hint">Step 4 of 4 · Music &amp; difficulty<br><b>${nm(CB.p)}</b> vs <b>${nm(CB.o)}</b> · ${STN[CB.s]}</p>
  <div class="row" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;max-width:94vw">${CBM.map(([k,n])=>`<button style="${CB.m===k?'background:#1a8f4a;box-shadow:0 0 0 3px #fff':''}" onclick="cbM('${k}')">${n}</button>`).join('')}</div>
- <div class="row" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;max-width:94vw">${CBD.map((n,i)=>`<button style="${CB.d==i?'background:#1a8f4a;box-shadow:0 0 0 3px #fff':''}" onclick="cbD(${i})">${n}</button>`).join('')}</div>
+ <div class="row" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;max-width:94vw;margin-top:22px">${CBD.map((n,i)=>`<button style="${CB.d==i?'background:#1a8f4a;box-shadow:0 0 0 3px #fff':''}" onclick="cbD(${i})">${n}</button>`).join('')}</div>
  <button style="font-size:20px;padding:14px 34px" onclick="sfxSel();cbGo()">FIGHT!</button><button onclick="sfxSel();cbStage()">BACK</button>`)}
 window.cbM=k=>{sfxSel();CB.m=k=='null'?null:k;if(CB.m)music(CB.m,1);else music(null);KM=true;cbMusic();KM=false};
 window.cbD=i=>{sfxSel();CB.d=i;KM=true;cbMusic();KM=false};
 window.cbGo=()=>{CB.on=true;KM=false;$('ov').style.display='none';ult=null;intro=null;$('lb').style.display='none';$('tug').style.display='none';$('rps').style.display='none';document.body.classList.remove('cin','intro');
  setStage(CB.s);CRK.splice(0).forEach(m=>scn.remove(m));RHT.length=0;rushCd=3;got=0;spawnBalls();round=0;
  [fp,fe].forEach(f=>f&&(scn.remove(f.g),scn.remove(f.sh)));PJ.splice(0).forEach(p=>scn.remove(p.m));
- fp=fighter(CB.p,true,-14,0);fe=fighter(CB.o,false,14,0);fe.dif=CB.d+1;fe.spd=[.7,.92,1.05][CB.d];
+ fp=fighter(CB.p,true,-14,0);fe=fighter(CB.o,false,14,0);fe.dif=CB.d;fe.spd=[.7,.7,.92,1.05][CB.d];
  yaw=-PI/2;pit=.3;$('hp').style.display='';$('he').style.display='';document.querySelectorAll('.ctl').forEach(c=>c.classList.add('on'));$('ab').classList.toggle('on',true);
  st='fight';locked=true;if(CB.m)music(CB.m,1);else music(null);
  let n=3;msg('3',900);const iv=setInterval(()=>{n--;if(n>0)msg(''+n,900);else{clearInterval(iv);msg('FIGHT!',900);locked=false}},900)};
@@ -790,7 +793,7 @@ function vsCard(ci,p){return `<div class="vsc"><div class="vsn"><span class="vpt
 let aLast=null;const aUsed=()=>AK.reduce((t,x)=>t+tmp[x],0);
 function allocUI(){const rem=pool-aUsed();
  ovl(`<div class="apg"><div class="ahd"><div class="ttl">POWER UP</div><div class="aorb">${Array.from({length:pool},(_,j)=>`<i${j<rem?'':' class="u"'}></i>`).join('')}</div></div>${AK.map((k,c)=>{const b=2+att[k],t=tmp[k];
-  return `<div class="arw${b+t>=5?' full':''}" onclick="al('${k}',1)">${aiTag(c)}<b>${AN[c]}</b><div class="asl">${[0,1,2,3,4].map(j=>j<b?aiTag(c):j<b+t?`<span class="ai c${c} nw${k==aLast&&j==b+t-1?' pop':''}" onclick="event.stopPropagation();al('${k}',-1)"></span>`:aiTag(5)).join('')}</div></div>`}).join('')}</div><button class="${rem?'off':''}" onclick="alDone()">READY</button>`)}
+  return `<div class="arw${b+t>=5?' full':''}" onclick="al('${k}',1)">${aiTag(c)}<b>${AN[c]}</b><div class="asl">${[0,1,2,3,4].map(j=>j<b?aiTag(c):j<b+t?`<span class="ai c${c} nw${k==aLast&&j==b+t-1?' pop':''}" onclick="event.stopPropagation();al('${k}',-1)"></span>`:aiTag(5)).join('')}</div></div>`}).join('')}</div><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">${round==0?`<button onclick="sfxSel();menu()">BACK</button>`:''}<button class="${rem?'off':''}" onclick="alDone()">READY</button></div>`)}
 window.al=(k,d)=>{const rem=pool-aUsed();if(d>0&&(rem<=0||2+att[k]+tmp[k]>=5))return;if(d<0&&tmp[k]<=0)return;tmp[k]+=d;aLast=d>0?k:null;sfxSel();allocUI()};
 window.alDone=()=>{if(pool-aUsed()>0)return;sfxSel();for(const k of AK)att[k]+=tmp[k];pool=0;tmp={h:0,k:0,s:0,v:0,u:0};aLast=null;bracket()};
 function makeBoss(ci){const f=fighter(ci,false,14,0,npcP);f.dif=3;f.spd=.97;f.boss=1;return f}

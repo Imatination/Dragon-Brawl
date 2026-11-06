@@ -42,8 +42,16 @@ html,body{margin:0;height:100%;background:#000;overflow:hidden}
 <div id="ldr"><div class="ld-ball"><svg class="ld-star" viewBox="-50 -50 100 100" aria-hidden="true"><polygon points="0.0,-40.0 9.7,-13.3 38.0,-12.4 15.7,5.1 23.5,32.4 0.0,16.5 -23.5,32.4 -15.7,5.1 -38.0,-12.4 -9.7,-13.3"/></svg></div><div class="ld-tx">LOADING</div></div>
 <script>(function(){var t=Date.now(),s=document.querySelector('#ldr .ld-star'),x=document.querySelector('#ldr .ld-tx');if(s)s.style.animationDelay=-(t%1600)+'ms';if(x)x.style.animationDelay=-(t%1400)+'ms'})();</script>
 <script>
-// Small start page: shows the loading screen (and gives link previews a light page to read), then loads the full game into this same page.
-// (the 3D engine is fetched first so it is already cached when the game page asks for it)
-(function(){var T='https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js',g=fetch('game.html').then(function(r){if(!r.ok)throw new Error(r.status);return r.text()}),e=new Promise(function(ok){var sc=document.createElement('script');sc.src=T;sc.onload=sc.onerror=ok;document.head.appendChild(sc)});Promise.all([g,e]).then(function(v){document.open();document.write(v[0]);document.close()}).catch(function(){location.replace('game.html')})})();
+// Small start page: shows the loading screen right away (and gives link previews a light page to read),
+// downloads the full game with a progress count, then loads it into this same page.
+(function(){var x=document.querySelector('#ldr .ld-tx');
+function show(t){document.open();document.write(t);document.close()}
+fetch('game.html').then(function(r){if(!r.ok)throw new Error(r.status);var n=15673544; // uncompressed size of game.html (the header may report the compressed size)
+
+ if(!r.body||!window.TextDecoder)return r.text();
+ var rd=r.body.getReader(),dec=new TextDecoder(),parts=[],got=0;
+ return (function pump(){return rd.read().then(function(c){if(c.done){parts.push(dec.decode());return parts.join('')}
+  got+=c.value.length;parts.push(dec.decode(c.value,{stream:true}));if(x)x.textContent='LOADING '+Math.min(99,Math.floor(got*100/n))+'%';return pump()})})()})
+ .then(show).catch(function(){location.replace('game.html')})})();
 </script>
 </body></html>
